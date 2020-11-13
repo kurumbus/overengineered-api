@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -10,7 +11,11 @@ class ProductController extends Controller
 
     public function index()
     {
-        return Product::get();
+        try {
+            return Product::get();
+        } catch (Exception $e) {
+            $this->respondError($e->getMessage());
+        }
     }
 
     public function store(Request $request)
@@ -20,19 +25,31 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
-        return $product;
+        try {
+            return $product;
+        } catch (Exception $e) {
+            $this->respondError($e->getMessage());
+        }
     }
-
 
     public function update(Request $request, Product $product)
     {
-        $product->update($request->all());
-        return $product;
+        try {
+            $product->update($request->all());
+            return $product;
+        } catch (Exception $e) {
+            $this->respondError($e->getMessage());
+        }
+
     }
 
 
     public function destroy(Product $product)
     {
-        return $product->delete();
+        try {
+            return $product->delete();
+        } catch (Exception $e) {
+            $this->respondError($e->getMessage());
+        }
     }
 }
