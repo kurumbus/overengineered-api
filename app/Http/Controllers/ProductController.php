@@ -3,16 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Services\ProductService;
 use Exception;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
 
+    /**
+     * @var \App\Services\ProductService
+     */
+    private $service;
+
+    public function __construct(ProductService $productService)
+    {
+        parent::__construct();
+        $this->service = $productService;
+    }
+
     public function index()
     {
         try {
-            return Product::get();
+            return $this->service->index();
         } catch (Exception $e) {
             $this->respondError($e->getMessage());
         }
@@ -20,23 +32,26 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        return Product::create($request->all());
-    }
-
-    public function show(Product $product)
-    {
         try {
-            return $product;
+            return $this->service->store($request->all());
         } catch (Exception $e) {
             $this->respondError($e->getMessage());
         }
     }
 
-    public function update(Request $request, Product $product)
+    public function show($id)
     {
         try {
-            $product->update($request->all());
-            return $product;
+            return $this->service->show($id);
+        } catch (Exception $e) {
+            $this->respondError($e->getMessage());
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            return $this->service->update($id, $request->all());
         } catch (Exception $e) {
             $this->respondError($e->getMessage());
         }
@@ -44,10 +59,10 @@ class ProductController extends Controller
     }
 
 
-    public function destroy(Product $product)
+    public function destroy($id)
     {
         try {
-            return $product->delete();
+            return $this->service->destroy($id);
         } catch (Exception $e) {
             $this->respondError($e->getMessage());
         }
