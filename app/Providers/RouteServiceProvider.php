@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Repositories\ProductRepositoryEloquent;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use App\Repositories\ProductRepository;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -36,6 +38,11 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configureRateLimiting();
+
+        $this->app->bind(
+            ProductRepository::class,
+            ProductRepositoryEloquent::class
+        );
 
         $this->routes(function () {
             Route::prefix('api')
