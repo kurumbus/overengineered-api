@@ -4,6 +4,7 @@
 namespace App\Repositories;
 
 
+use App\Collections\ProductResourceCollection;
 use App\Models\Product;
 use Illuminate\Support\Facades\Cache as Cache;
 
@@ -14,7 +15,7 @@ class ProductRepository
         return Cache::tags(['api-requests'])
             ->remember('products.index', 3600, function ()
             {
-                return Product::all();
+                return new ProductResourceCollection(Product::all());
             });
     }
 
