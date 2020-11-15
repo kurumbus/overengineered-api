@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Collections\ProductResourceCollection;
 use App\Models\Product;
+use App\Resources\ProductResource;
 use Illuminate\Support\Facades\Cache as Cache;
 
 class ProductRepository
@@ -24,20 +25,20 @@ class ProductRepository
         return Cache::tags(['api-requests'])
             ->remember('products.'.$id, 3600, function () use ($id)
             {
-                return Product::findOrFail($id);
+                return new ProductResource(Product::findOrFail($id));
             });
     }
 
     public function store(array $data)
     {
-        return Product::create($data);
+        return  new ProductResource(Product::create($data));
     }
 
     public function update(Product $product, array $data)
     {
         Cache::forget('products.'.$product->id);
         $product->update($data);
-        return $product->fresh();
+        return  new ProductResource($product->fresh());
     }
 
     public function destroy($id)

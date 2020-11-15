@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Collections\ProductResourceCollection;
 use App\Models\Product;
+use App\Resources\ProductResource;
 use App\Services\ProductService;
 use Exception;
 use Illuminate\Http\Request;
@@ -42,7 +44,7 @@ class ProductController extends Controller
     public function show($id)
     {
         try {
-            return $this->service->show($id);
+            return  new ProductResource($this->service->show($id));
         } catch (Exception $e) {
             $this->respondError($e->getMessage());
         }
